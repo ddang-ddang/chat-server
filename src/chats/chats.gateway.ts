@@ -7,18 +7,18 @@ import {
 import { Server } from 'http';
 import { Socket } from 'socket.io';
 import { ChatsService } from './chats.service';
-import { CreateChatDto } from './dto/create-chat.dto';
-import { UpdateChatDto } from './dto/update-chat.dto';
+import { CreateChatDto } from './dto/chat.dto';
 
 @WebSocketGateway()
 export class ChatsGateway {
   server: Server;
 
-  // private logger = new Logger('')
+  private logger: Logger = new Logger('ChatsGateway');
   constructor(private readonly chatsService: ChatsService) {}
 
   @SubscribeMessage('creaetRoom')
   async createRoom(socket: Socket, data: string) {
+    this.logger.log(`trying to create room by client Id `);
     socket.join('aRoom');
     socket.to('aRoom').emit('roomCreated', { room: 'aRoom' });
     return { event: 'roomCreated', room: 'aRoom' };
@@ -26,6 +26,7 @@ export class ChatsGateway {
 
   @SubscribeMessage('createChat')
   async createChat(@MessageBody() createChatDto: CreateChatDto) {
+    this.logger.log(`trying to send message by client Id `);
     const message = await this.chatsService.createChat(createChatDto);
     this.server.emit('message', message);
     return message;
@@ -39,6 +40,10 @@ export class ChatsGateway {
   @SubscribeMessage('removeChat')
   remove(@MessageBody() id: number) {
     return this.chatsService.remove(id);
+  }
+
+  afterInit(server: Server) {
+    this.logger.log('Init');
   }
 
   handleConnection(client: Socket) {
