@@ -27,8 +27,7 @@ export class ChatsGateway {
 
   @SubscribeMessage('createRoom')
   createRoom(client: Socket, room: any) {
-    this.chatsService.createRoom(client, room);
-    return;
+    return this.chatsService.createRoom(client, room);
   }
 
   @SubscribeMessage('enterRoom')
@@ -36,12 +35,12 @@ export class ChatsGateway {
     if (client.rooms.has(roomId)) {
       return;
     }
+    this.chatsService.enterRoom(client, roomId);
   }
 
   @SubscribeMessage('sendMessage')
   sendMessage(client: Socket, message: string) {
-    console.log(client.rooms);
-    console.log(message);
+    this.chatsService.sendMessage(client, message);
     client.rooms.forEach((roomId) =>
       client.to(roomId).emit('getMessage', {
         id: client.id,
@@ -51,16 +50,10 @@ export class ChatsGateway {
     );
   }
 
-  //채팅방 목록 가져오기
-  // @SubscribeMessage('getChatRoomList')
-  // getChatRoomList(client: Socket, payload: any) {
-  //   client.emit('getChatRoomList', this.chatsService.getChatRoomList());
-  // }
-
   // 특정 마을의 채팅방에 들어가면 실행될 함수
   @SubscribeMessage('findAllChats')
-  findAll() {
-    return this.chatsService.findAll();
+  getAllMessages(client: Socket, roomId: any) {
+    return this.chatsService.getAllMessages(client, roomId);
   }
 
   afterInit(server: Server) {
