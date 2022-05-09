@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { Socket } from 'socket.io';
 import { CreateChatDto } from './dto/chat.dto';
 
 @Injectable()
 export class ChatsService {
-  private chatRoomList: Record<string, chatRoomListDTO>;
-  constructor() {
-    this.chatRoomList = {
-      'room:lobby': {
-        roomId: 'room:lobby',
-        roomName: '로비',
-        cheifId: null,
-      },
-    };
+  createRoom(client: Socket, room: any) {
+    const roomId = room.id;
+    const nickname: string = client.data.nickname;
+    // TODO: DB 저장 로직
+
+    client.data.roomId = roomId;
+    client.rooms.clear();
+    client.join(roomId);
   }
 
   createChat(createChatDto: CreateChatDto) {

@@ -25,36 +25,18 @@ export class ChatsGateway {
   private logger: Logger = new Logger('ChatsGateway');
   constructor(private readonly chatsService: ChatsService) {}
 
-  // @SubscribeMessage('joinRoom') // join할 경우 방이 자동 생성됨
-  // async createRoom(client: Socket, data: string) {
-  //   this.logger.verbose('trying to create room');
-  //   console.log(data);
-  //   console.log(client);
-  //   client.join('aRoom'); // aRoom 에는 동이름
-  //   client.to('aRoom').emit('roomCreated', { room: 'aRoom' });
-  //   return { event: 'roomCreated', room: 'aRoom' };
-  // }
+  @SubscribeMessage('createRoom')
+  createRoom(client: Socket, room: any) {
+    this.chatsService.createRoom(client, room);
+    return;
+  }
 
-  @SubscribeMessage('joinRoom') // join할 경우 방이 자동 생성됨
-  async createRoom(client: Socket, roomId: string) {
+  @SubscribeMessage('enterRoom')
+  async enterRoom(client: Socket, roomId: string) {
     if (client.rooms.has(roomId)) {
       return;
     }
   }
-
-  // @SubscribeMessage('sendMessage')
-  // async createChat(
-  //   @MessageBody() client: Socket,
-  //   createChatDto: CreateChatDto,
-  // ) {
-  //   this.logger.verbose('trying to send message');
-  //   const message = await this.chatsService.createChat(createChatDto);
-  //   // this.server.emit('message', message);
-  //   console.log(message);
-  //   const roomId = 'aRoom';
-  //   client.to(roomId).emit('message', message);
-  //   return message;
-  // }
 
   @SubscribeMessage('sendMessage')
   sendMessage(client: Socket, message: string) {
@@ -75,14 +57,10 @@ export class ChatsGateway {
   //   client.emit('getChatRoomList', this.chatsService.getChatRoomList());
   // }
 
+  // 특정 마을의 채팅방에 들어가면 실행될 함수
   @SubscribeMessage('findAllChats')
   findAll() {
     return this.chatsService.findAll();
-  }
-
-  @SubscribeMessage('removeChat')
-  remove(@MessageBody() id: number) {
-    return this.chatsService.remove(id);
   }
 
   afterInit(server: Server) {
