@@ -4,7 +4,7 @@ import { User } from './user.schema';
 
 @Schema()
 export class Message extends Document {
-  @Prop()
+  @Prop({ required: true })
   message: string;
 
   @Prop({ default: new Date() })

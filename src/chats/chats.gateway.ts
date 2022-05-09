@@ -9,14 +9,14 @@ import { Socket } from 'socket.io';
 import { ChatsService } from './chats.service';
 import { CreateChatDto } from './dto/chat.dto';
 
-// @WebSocketGateway(8080, {
+// @WebSocketGateway({
 //   cors: {
-//     origin: 'http://localhost:3000',
+//     origin: '*',
 //   },
 // })
-@WebSocketGateway({
+@WebSocketGateway(8080, {
   cors: {
-    origin: '*',
+    origin: 'http://localhost:3000',
   },
 })
 export class ChatsGateway {
@@ -25,18 +25,23 @@ export class ChatsGateway {
   private logger: Logger = new Logger('ChatsGateway');
   constructor(private readonly chatsService: ChatsService) {}
 
+  @SubscribeMessage('enterRoom')
+  setInit(client: Socket, data: any) {
+    console.log(data);
+    this.chatsService.enterRoom(client, data);
+  }
   @SubscribeMessage('createRoom')
   createRoom(client: Socket, room: any) {
     return this.chatsService.createRoom(client, room);
   }
 
-  @SubscribeMessage('enterRoom')
-  async enterRoom(client: Socket, roomId: string) {
-    if (client.rooms.has(roomId)) {
-      return;
-    }
-    this.chatsService.enterRoom(client, roomId);
-  }
+  // @SubscribeMessage('enterRoom')
+  // async enterRoom(client: Socket, roomId: string) {
+  //   if (client.rooms.has(roomId)) {
+  //     return;
+  //   }
+  //   this.chatsService.enterRoom(client, roomId);
+  // }
 
   @SubscribeMessage('sendMessage')
   sendMessage(client: Socket, message: string) {
