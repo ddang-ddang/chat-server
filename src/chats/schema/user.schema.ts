@@ -7,7 +7,7 @@ import { Message } from './message.schema';
 @Schema()
 export class User extends Document {
   @Prop()
-  email: string;
+  socketId: string;
 
   @Prop()
   nickname: string;

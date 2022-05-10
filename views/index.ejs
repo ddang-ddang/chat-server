@@ -115,11 +115,11 @@
             },
         };
         const socket = io('http://localhost:8080');
-        socket.on('connect', function () {
+        socket.on('connect', function (response) {
             console.log('Connected');
             //연결 완료 후 로컬스토리지를 확인하여 닉네임 세팅
             // const nickname = localStorage.getItem('nickname');
-            const nickname = 'woosoek';
+            const nickname = 'wooseok';
             const room = {
                 roomId: 12,
                 roomName: '봉천동',
@@ -133,8 +133,11 @@
             });
             socket.emit('getChatRoomList', null);
         });
+        
         socket.on('getMessage', function ({ id, nickname, message }) {
             let html = '';
+            console.log(id)
+            console.log('myInfo.id', myInfo.id)
             if (myInfo.id == id) {
                 html += '<div class="outgoing_msg">';
                 html += '<div class="sent_msg">';

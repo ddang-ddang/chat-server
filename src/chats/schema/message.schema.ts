@@ -7,6 +7,9 @@ export class Message extends Document {
   @Prop({ required: true })
   message: string;
 
+  @Prop({ required: true })
+  socketId: string;
+
   @Prop({ default: new Date() })
   createdAt: Date;
 

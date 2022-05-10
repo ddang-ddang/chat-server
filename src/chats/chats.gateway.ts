@@ -29,7 +29,12 @@ export class ChatsGateway {
   setInit(client: Socket, data: any) {
     console.log(data);
     this.chatsService.enterRoom(client, data);
+    return {
+      nickname: data.nickname,
+      room: data.room,
+    };
   }
+
   @SubscribeMessage('createRoom')
   createRoom(client: Socket, room: any) {
     return this.chatsService.createRoom(client, room);
@@ -44,8 +49,10 @@ export class ChatsGateway {
   // }
 
   @SubscribeMessage('sendMessage')
-  sendMessage(client: Socket, message: string) {
-    this.chatsService.sendMessage(client, message);
+  async sendMessage(client: Socket, message: string) {
+    await this.chatsService.sendMessage(client, message);
+    client.leave(client.id);
+    console.log(client);
     client.rooms.forEach((roomId) =>
       client.to(roomId).emit('getMessage', {
         id: client.id,

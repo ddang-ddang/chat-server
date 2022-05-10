@@ -4,10 +4,13 @@ import { Document } from 'mongoose';
 @Schema()
 export class ChatRoom extends Document {
   @Prop()
+  roomId: number;
+
+  @Prop()
   roomName: string;
 
   @Prop([String])
-  userId: string[];
+  socketId: string[];
 
   @Prop({ default: new Date() })
   createdAt: Date;
