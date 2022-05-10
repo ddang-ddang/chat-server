@@ -52,7 +52,6 @@ export class ChatsGateway {
   async sendMessage(client: Socket, message: string) {
     await this.chatsService.sendMessage(client, message);
     client.leave(client.id);
-    console.log(client);
     client.rooms.forEach((roomId) =>
       client.to(roomId).emit('getMessage', {
         id: client.id,
@@ -60,6 +59,13 @@ export class ChatsGateway {
         message,
       }),
     );
+  }
+
+  @SubscribeMessage('exitRoom')
+  exitRoom(client: Socket, roomInfo: any) {
+    const { roomId } = roomInfo;
+    console.log(roomId)
+    client.leave(roomId);
   }
 
   // 특정 마을의 채팅방에 들어가면 실행될 함수

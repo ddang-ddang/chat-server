@@ -68,6 +68,15 @@
                                         aria-hidden="true"
                                     ></i>
                                 </button>
+                                <button
+                                    class="exit_btn exitRoom"
+                                    type="button"
+                                >
+                                    <i
+                                        class="fa fa-paper-plane-o"
+                                        aria-hidden="true"
+                                    ></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -114,6 +123,11 @@
                 roomName: null,
             },
         };
+
+        let roomInfo = {
+            roomId: 12,
+            roomName: '봉천동'
+        }
         const socket = io('http://localhost:8080');
         socket.on('connect', function (response) {
             console.log('Connected');
@@ -232,5 +246,9 @@
             socket.emit('setNickname', nickname);
             localStorage.setItem('nickname', nickname);
         });
+
+        $('.exitRoom').on('click', function () {
+            socket.emit('exitRoom', roomInfo)
+        })
     </script>
 </html>
