@@ -29,6 +29,8 @@ export class ChatsGateway {
   setInit(client: Socket, data: any) {
     console.log(data);
     this.chatsService.enterRoom(client, data);
+    // TODO: 현재까지의 채팅기록을 보여준다.
+    this.chatsService.getAllMessages(client, data);
     return {
       nickname: data.nickname,
       room: data.room,
@@ -40,24 +42,18 @@ export class ChatsGateway {
     return this.chatsService.createRoom(client, room);
   }
 
-  // @SubscribeMessage('enterRoom')
-  // async enterRoom(client: Socket, roomId: string) {
-  //   if (client.rooms.has(roomId)) {
-  //     return;
-  //   }
-  //   this.chatsService.enterRoom(client, roomId);
-  // }
-
   @SubscribeMessage('sendMessage')
-  async sendMessage(client: Socket, message: string) {
-    await this.chatsService.sendMessage(client, message);
+  async sendMessage(client: Socket, data: any) {
+    console.log(data);
+    const { message } = data;
+    await this.chatsService.sendMessage(client, data);
     client.leave(client.id);
     client.rooms.forEach((roomId) =>
       client.to(roomId).emit('getMessage', {
         id: client.id,
         nickname: client.data.nickname,
         message,
-      }),
+      })
     );
   }
 

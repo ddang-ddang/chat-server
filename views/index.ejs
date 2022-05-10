@@ -123,7 +123,8 @@
                 roomName: null,
             },
         };
-
+        
+        let userId = 5;
         let roomInfo = {
             roomId: 12,
             roomName: '봉천동'
@@ -133,12 +134,13 @@
             console.log('Connected');
             //연결 완료 후 로컬스토리지를 확인하여 닉네임 세팅
             // const nickname = localStorage.getItem('nickname');
+            const userId = 3;
             const nickname = 'wooseok';
             const room = {
                 roomId: 12,
                 roomName: '봉천동',
             }
-            socket.emit('enterRoom', { nickname, room }, (response) => {
+            socket.emit('enterRoom', { userId, nickname, room }, (response) => {
                 myInfo.nickname = response.nickname;
                 myInfo.id = socket.id;
                 myInfo.room = response.room;
@@ -233,7 +235,8 @@
 
         //메시지 전송
         $('.sendMessage').on('click', function () {
-            socket.emit('sendMessage', $('.write_msg').val());
+            const message = $('.write_msg').val()
+            socket.emit('sendMessage', { userId, message, roomInfo });
             $('.write_msg').val('');
         });
 

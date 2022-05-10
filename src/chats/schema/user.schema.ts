@@ -7,6 +7,9 @@ import { Message } from './message.schema';
 @Schema()
 export class User extends Document {
   @Prop()
+  userId: number;
+
+  @Prop()
   socketId: string;
 
   @Prop()
@@ -18,8 +21,8 @@ export class User extends Document {
   @Prop({ default: new Date() })
   updatedAt: Date;
 
-  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Message' }] })
-  messages: Message[];
+  // @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Message' }] })
+  // messages: Message[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

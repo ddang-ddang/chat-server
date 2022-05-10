@@ -5,10 +5,13 @@ import { User } from './user.schema';
 @Schema()
 export class Message extends Document {
   @Prop({ required: true })
-  message: string;
+  userId: string;
 
   @Prop({ required: true })
-  socketId: string;
+  roomId: number;
+
+  @Prop({ required: true })
+  message: string;
 
   @Prop({ default: new Date() })
   createdAt: Date;
@@ -16,11 +19,11 @@ export class Message extends Document {
   @Prop({ default: null })
   deletedAt: Date;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
-  user: Types.ObjectId;
+  // @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
+  // user: Types.ObjectId;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'ChatRoom' })
-  chatRoom: Types.ObjectId;
+  // @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'ChatRoom' })
+  // chatRoom: Types.ObjectId;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

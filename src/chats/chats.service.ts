@@ -49,9 +49,10 @@ export class ChatsService {
     // console.log(client);
   }
 
-  sendMessage(client: Socket, message: string) {
+  sendMessage(client: Socket, data: any) {
     // TODO db에 저장하는 로직 추가
-    return message;
+    this.chatsRepository.storeMessage(client, data);
+    // return message;
   }
 
   exitRoom(client: Socket, roomId: number) {
@@ -62,8 +63,9 @@ export class ChatsService {
     // TODO: DB에서 roomname 가져오기
   }
 
-  getAllMessages(client: Socket, roomId: any) {
+  getAllMessages(client: Socket, data: any) {
     // TODO: 마을채팅방 접속시 DB에서 마을의 채팅기록 불러오기
+    this.chatsRepository.getAllMessages(client, data);
   }
 
   remove(id: number) {
