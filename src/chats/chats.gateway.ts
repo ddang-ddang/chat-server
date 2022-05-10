@@ -64,8 +64,9 @@ export class ChatsGateway {
   @SubscribeMessage('exitRoom')
   exitRoom(client: Socket, roomInfo: any) {
     const { roomId } = roomInfo;
-    console.log(roomId)
     client.leave(roomId);
+    this.chatsService.exitRoom(client, roomId);
+    this.handleDisconnction(client);
   }
 
   // 특정 마을의 채팅방에 들어가면 실행될 함수

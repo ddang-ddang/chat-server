@@ -19,9 +19,9 @@ export class ChatsRepository {
     return await this.chatRoomModel.findOne({ roomId });
   }
 
-  async findOneUser() {
-    
-  }
+  // async findOneUser() {
+
+  // }
 
   async createRoom(client: Socket, data: any) {
     const { roomId, roomName } = data.room;
@@ -37,6 +37,13 @@ export class ChatsRepository {
     await this.chatRoomModel.updateOne(
       { roomId },
       { $push: { socketId: client.id } },
+    );
+  }
+
+  async exitRoom(client: Socket, roomId: number) {
+    await this.chatRoomModel.updateOne(
+      { roomId },
+      { $pull: { socketId: client.id } },
     );
   }
 }

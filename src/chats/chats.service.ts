@@ -54,6 +54,10 @@ export class ChatsService {
     return message;
   }
 
+  exitRoom(client: Socket, roomId: number) {
+    this.chatsRepository.exitRoom(client, roomId);
+  }
+
   getChatRoom(roomId: any) {
     // TODO: DB에서 roomname 가져오기
   }
