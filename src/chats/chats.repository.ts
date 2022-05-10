@@ -60,6 +60,7 @@ export class ChatsRepository {
 
   async storeMessage(client: Socket, data: any) {
     const { userId, message } = data;
+    console.log(typeof userId);
     const { roomId } = data.roomInfo;
     this.messageModel.create({
       userId,
@@ -76,6 +77,12 @@ export class ChatsRepository {
   }
 
   async getAllMessages(client: Socket, data: any) {
-    //
+    const { roomId } = data.room;
+    const messages = await this.messageModel.find({
+      where: {
+        roomId,
+      },
+    });
+    return messages;
   }
 }

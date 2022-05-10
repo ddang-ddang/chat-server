@@ -250,6 +250,7 @@
             localStorage.setItem('nickname', nickname);
         });
 
+        // 채팅방 나가기
         $('.exitRoom').on('click', function () {
             socket.emit('exitRoom', roomInfo)
         })

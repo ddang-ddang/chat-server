@@ -26,11 +26,11 @@ export class ChatsGateway {
   constructor(private readonly chatsService: ChatsService) {}
 
   @SubscribeMessage('enterRoom')
-  setInit(client: Socket, data: any) {
+  async setInit(client: Socket, data: any) {
     console.log(data);
     this.chatsService.enterRoom(client, data);
     // TODO: 현재까지의 채팅기록을 보여준다.
-    this.chatsService.getAllMessages(client, data);
+    const messaages = await this.chatsService.getAllMessages(client, data);
     return {
       nickname: data.nickname,
       room: data.room,

@@ -5,7 +5,7 @@ import { User } from './user.schema';
 @Schema()
 export class Message extends Document {
   @Prop({ required: true })
-  userId: string;
+  userId: number;
 
   @Prop({ required: true })
   roomId: number;
