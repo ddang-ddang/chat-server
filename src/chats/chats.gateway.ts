@@ -27,13 +27,11 @@ export class ChatsGateway {
 
   @SubscribeMessage('enterRoom')
   async setInit(client: Socket, data: any) {
-    console.log(data);
     this.chatsService.enterRoom(client, data);
     // TODO: 현재까지의 채팅기록을 보여준다.
-    const messaages = await this.chatsService.getAllMessages(client, data);
+    const messages = await this.chatsService.getAllMessages(client, data);
     return {
-      nickname: data.nickname,
-      room: data.room,
+      data,
     };
   }
 
@@ -44,8 +42,8 @@ export class ChatsGateway {
 
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, data: any) {
-    console.log(data);
     const { message } = data;
+    console.log('데이터 맞아?', data);
     await this.chatsService.sendMessage(client, data);
     client.leave(client.id);
     client.rooms.forEach((roomId) =>
@@ -66,8 +64,9 @@ export class ChatsGateway {
   }
 
   // 특정 마을의 채팅방에 들어가면 실행될 함수
-  @SubscribeMessage('findAllChats')
-  getAllMessages(client: Socket, roomId: any) {
+  @SubscribeMessage('findAllMessages')
+  getAllMessages(client: Socket, room: any) {
+    const { roomId } = room;
     return this.chatsService.getAllMessages(client, roomId);
   }
 

@@ -15,7 +15,7 @@ export class ChatsRepository {
   ) {}
 
   async findOneRoom(data: any) {
-    const { roomId } = data.room;
+    const { roomId } = data;
     return await this.chatRoomModel.findOne({ roomId });
   }
 
@@ -25,8 +25,7 @@ export class ChatsRepository {
   }
 
   async createRoom(client: Socket, data: any) {
-    const { roomId, roomName } = data.room;
-    const { userId } = data;
+    const { roomId, roomName } = data;
     await this.createUser(client, data);
     await this.chatRoomModel.create({
       roomName,
@@ -36,7 +35,7 @@ export class ChatsRepository {
   }
 
   async enterRoom(client: Socket, data: any) {
-    const { roomId } = data.room;
+    const { roomId } = data;
     this.createUser(client, data);
     await this.chatRoomModel.updateOne(
       { roomId },
@@ -59,9 +58,9 @@ export class ChatsRepository {
   }
 
   async storeMessage(client: Socket, data: any) {
-    const { userId, message } = data;
-    console.log(typeof userId);
-    const { roomId } = data.roomInfo;
+    const { userId } = data;
+    const { message } = data.body;
+    const { roomId } = data;
     this.messageModel.create({
       userId,
       roomId,
@@ -76,8 +75,7 @@ export class ChatsRepository {
     );
   }
 
-  async getAllMessages(client: Socket, data: any) {
-    const { roomId } = data.room;
+  async getAllMessages(client: Socket, roomId: number) {
     const messages = await this.messageModel.find({
       where: {
         roomId,

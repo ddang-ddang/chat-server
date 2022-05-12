@@ -27,16 +27,17 @@ export class ChatsService {
 
   async enterRoom(client: Socket, data: any) {
     // 만약 방에 아무도 없다면 createRoom 하고 enter
+    console.log(data);
     const chatRoom = await this.chatsRepository.findOneRoom(data);
     if (!chatRoom) {
-      this.chatsRepository.createRoom(client, data);
+      await this.chatsRepository.createRoom(client, data);
       console.log('create room');
     } else {
-      this.chatsRepository.enterRoom(client, data);
+      await this.chatsRepository.enterRoom(client, data);
       console.log('enter room');
     }
 
-    const { roomId, roomName } = data.room;
+    const { roomId, roomName } = data;
     const { nickname } = data;
     client.data.roomId = roomId;
     // client.rooms.clear();
@@ -59,16 +60,9 @@ export class ChatsService {
     this.chatsRepository.exitRoom(client, roomId);
   }
 
-  getChatRoom(roomId: any) {
-    // TODO: DB에서 roomname 가져오기
-  }
-
-  getAllMessages(client: Socket, data: any) {
+  async getAllMessages(client: Socket, roomId: number) {
     // TODO: 마을채팅방 접속시 DB에서 마을의 채팅기록 불러오기
-    this.chatsRepository.getAllMessages(client, data);
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} chat`;
+    const messages = await this.chatsRepository.getAllMessages(client, roomId);
+    return messages;
   }
 }
