@@ -32,6 +32,7 @@ export class ChatsGateway {
     const messages = await this.chatsService.getAllMessages(client, data);
     return {
       data,
+      messages,
     };
   }
 

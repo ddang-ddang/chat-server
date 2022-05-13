@@ -60,8 +60,9 @@ export class ChatsService {
     this.chatsRepository.exitRoom(client, roomId);
   }
 
-  async getAllMessages(client: Socket, roomId: number) {
+  async getAllMessages(client: Socket, data: any) {
     // TODO: 마을채팅방 접속시 DB에서 마을의 채팅기록 불러오기
+    const { roomId } = data;
     const messages = await this.chatsRepository.getAllMessages(client, roomId);
     return messages;
   }

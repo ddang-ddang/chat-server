@@ -16,6 +16,8 @@ export class ChatsRepository {
 
   async findOneRoom(data: any) {
     const { roomId } = data;
+    console.log('===========');
+    console.log(roomId);
     return await this.chatRoomModel.findOne({ roomId });
   }
 
@@ -36,7 +38,7 @@ export class ChatsRepository {
 
   async enterRoom(client: Socket, data: any) {
     const { roomId } = data;
-    this.createUser(client, data);
+    await this.createUser(client, data);
     await this.chatRoomModel.updateOne(
       { roomId },
       { $push: { socketId: client.id } }
@@ -53,7 +55,13 @@ export class ChatsRepository {
         nickname,
       });
     } else {
-      this.userModel.updateOne({ userId }, { $set: { socketId: client.id } });
+      console.log('|||||||');
+      console.log(userId);
+      console.log(client.id);
+      await this.userModel.updateOne(
+        { userId },
+        { $set: { socketId: client.id } }
+      );
     }
   }
 
@@ -77,9 +85,7 @@ export class ChatsRepository {
 
   async getAllMessages(client: Socket, roomId: number) {
     const messages = await this.messageModel.find({
-      where: {
-        roomId,
-      },
+      roomId,
     });
     return messages;
   }
