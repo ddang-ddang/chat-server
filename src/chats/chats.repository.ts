@@ -66,9 +66,10 @@ export class ChatsRepository {
   }
 
   async storeMessage(client: Socket, data: any) {
-    const { userId } = data;
-    const { message } = data.body;
-    const { roomId } = data;
+    const { userId, message, roomId } = data;
+    console.log('userId', userId)
+    console.log('message', message)
+    console.log('roomId', roomId)
     this.messageModel.create({
       userId,
       roomId,

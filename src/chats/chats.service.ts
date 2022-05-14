@@ -27,7 +27,7 @@ export class ChatsService {
 
   async enterRoom(client: Socket, data: any) {
     // 만약 방에 아무도 없다면 createRoom 하고 enter
-    console.log(data);
+    console.log('data', data);
     const chatRoom = await this.chatsRepository.findOneRoom(data);
     if (!chatRoom) {
       await this.chatsRepository.createRoom(client, data);
@@ -36,9 +36,9 @@ export class ChatsService {
       await this.chatsRepository.enterRoom(client, data);
       console.log('enter room');
     }
+    console.log('이건가', data);
 
-    const { roomId, roomName } = data;
-    const { nickname } = data;
+    const { roomId, roomName, nickname } = data;
     client.data.roomId = roomId;
     // client.rooms.clear();
     client.join(roomId);
