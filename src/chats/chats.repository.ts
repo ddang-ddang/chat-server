@@ -55,9 +55,6 @@ export class ChatsRepository {
         nickname,
       });
     } else {
-      console.log('|||||||');
-      console.log(userId);
-      console.log(client.id);
       await this.userModel.updateOne(
         { userId },
         { $set: { socketId: client.id } }
@@ -67,9 +64,6 @@ export class ChatsRepository {
 
   async storeMessage(client: Socket, data: any) {
     const { userId, message, roomId } = data;
-    console.log('userId', userId)
-    console.log('message', message)
-    console.log('roomId', roomId)
     this.messageModel.create({
       userId,
       roomId,

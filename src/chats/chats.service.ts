@@ -36,7 +36,6 @@ export class ChatsService {
       await this.chatsRepository.enterRoom(client, data);
       console.log('enter room');
     }
-    console.log('이건가', data);
 
     const { roomId, roomName, nickname } = data;
     client.data.roomId = roomId;
@@ -47,7 +46,11 @@ export class ChatsService {
       nickname,
       message: `${nickname} 님이 ${roomName} 방에 입장했습니다.`,
     });
-    // console.log(client);
+    client.broadcast.to(roomId).emit('getMessage', {
+      id: client.id,
+      nickname,
+      message: `${nickname} 님이 ${roomName} 방에 입장했습니다.`
+    });
   }
 
   sendMessage(client: Socket, data: any) {
