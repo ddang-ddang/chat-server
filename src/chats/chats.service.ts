@@ -49,7 +49,7 @@ export class ChatsService {
     client.broadcast.to(roomId).emit('getMessage', {
       id: client.id,
       nickname,
-      message: `${nickname} 님이 ${roomName} 방에 입장했습니다.`
+      message: `${nickname} 님이 ${roomName} 방에 입장했습니다.`,
     });
   }
 
@@ -61,6 +61,11 @@ export class ChatsService {
 
   exitRoom(client: Socket, roomId: number) {
     this.chatsRepository.exitRoom(client, roomId);
+  }
+
+  async userInRoom(client: Socket, roomId: number) {
+    const inRoom = await this.chatsRepository.userInRoom(client, roomId);
+    return inRoom;
   }
 
   async getAllMessages(client: Socket, data: any) {

@@ -43,8 +43,18 @@ export class ChatsGateway {
 
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, data: any) {
-    console.log('후하', data)
-    const { userId, nickname, message } = data;
+    console.log('후하', data);
+    console.log(client.id);
+    const { userId, nickname, roomId, message } = data;
+    if (message === '') {
+      return;
+    }
+    const inRoom = await this.chatsService.userInRoom(client, roomId);
+    if (!inRoom) { // client id 가 chatRooms 안의 socketId 배열 안에 없다면 return
+      return {
+        error: '연결되지 않은 사용자입니다.',
+      };
+    }
     await this.chatsService.sendMessage(client, data);
     client.leave(client.id);
     client.rooms.forEach((roomId) =>
@@ -60,8 +70,9 @@ export class ChatsGateway {
   }
 
   @SubscribeMessage('exitRoom')
-  exitRoom(client: Socket, roomInfo: any) {
-    const { roomId } = roomInfo;
+  exitRoom(client: Socket, room: any) {
+    console.log('여기서 exit');
+    const { roomId } = room;
     client.leave(roomId);
     this.chatsService.exitRoom(client, roomId);
     this.handleDisconnction(client);

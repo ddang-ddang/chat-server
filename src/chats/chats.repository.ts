@@ -78,6 +78,23 @@ export class ChatsRepository {
     );
   }
 
+  async userInRoom(client: Socket, roomId: number) {
+    // const inRoom = await this.chatRoomModel.find({
+    //   where: {
+    //     roomId,
+    //   },
+    //   socketId: {
+    //     $in: client.id,
+    //   },
+    // });
+    const roomOne = await this.chatRoomModel.findOne({ roomId });
+    const inRoom = await roomOne.socketId.includes(client.id);
+    if (inRoom) {
+      return true;
+    }
+    return false;
+  }
+
   async getAllMessages(client: Socket, roomId: number) {
     const messages = await this.messageModel.find({
       roomId,
