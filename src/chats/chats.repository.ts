@@ -57,7 +57,12 @@ export class ChatsRepository {
     } else {
       await this.userModel.updateOne(
         { userId },
-        { $set: { socketId: client.id } }
+        {
+          $set: {
+            socketId: client.id,
+            nickname,
+          },
+        }
       );
     }
   }
