@@ -3,8 +3,8 @@ import { Document } from 'mongoose';
 
 @Schema()
 export class ChatRoom extends Document {
-  @Prop()
-  roomId: number;
+  // @Prop()
+  // roomId: number;
 
   @Prop()
   roomName: string;

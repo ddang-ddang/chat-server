@@ -9,11 +9,6 @@ import { Socket } from 'socket.io';
 import { ChatsService } from './chats.service';
 import { CreateChatDto } from './dto/chat.dto';
 
-// @WebSocketGateway({
-//   cors: {
-//     origin: '*',
-//   },
-// })
 @WebSocketGateway(8080, {
   cors: {
     origin: 'http://localhost:3000',
@@ -45,20 +40,21 @@ export class ChatsGateway {
   async sendMessage(client: Socket, data: any) {
     console.log('후하', data);
     console.log(client.id);
-    const { userId, nickname, roomId, message } = data;
+    const { userId, nickname, roomId, message, roomName } = data;
     if (message === '') {
       return;
     }
-    const inRoom = await this.chatsService.userInRoom(client, roomId);
-    if (!inRoom) { // client id 가 chatRooms 안의 socketId 배열 안에 없다면 return
+    const inRoom = await this.chatsService.userInRoom(client, roomName);
+    if (!inRoom) {
+      // client id 가 chatRooms 안의 socketId 배열 안에 없다면 return
       return {
         error: '연결되지 않은 사용자입니다.',
       };
     }
     await this.chatsService.sendMessage(client, data);
     client.leave(client.id);
-    client.rooms.forEach((roomId) =>
-      client.to(roomId).emit('getMessage', {
+    client.rooms.forEach((roomName) =>
+      client.to(roomName).emit('getMessage', {
         // id: client.id,
         userId,
         // nickname: client.data.nickname,
@@ -72,9 +68,9 @@ export class ChatsGateway {
   @SubscribeMessage('exitRoom')
   exitRoom(client: Socket, room: any) {
     console.log('여기서 exit');
-    const { roomId } = room;
-    client.leave(roomId);
-    this.chatsService.exitRoom(client, roomId);
+    const { roomName } = room;
+    client.leave(roomName);
+    this.chatsService.exitRoom(client, roomName);
     this.handleDisconnction(client);
   }
 

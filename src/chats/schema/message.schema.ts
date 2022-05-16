@@ -7,8 +7,11 @@ export class Message extends Document {
   @Prop({ required: true })
   userId: number;
 
+  // @Prop({ required: true })
+  // roomId: number;
+
   @Prop({ required: true })
-  roomId: number;
+  roomName: string;
 
   @Prop({ required: true })
   message: string;

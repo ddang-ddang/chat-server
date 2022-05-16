@@ -19,7 +19,6 @@ export class ChatsService {
     const roomId = room.id;
     const nickname: string = client.data.nickname;
     // TODO: DB 저장 로직
-
     client.data.roomId = roomId;
     client.rooms.clear();
     client.join(roomId);
@@ -27,7 +26,7 @@ export class ChatsService {
 
   async enterRoom(client: Socket, data: any) {
     // 만약 방에 아무도 없다면 createRoom 하고 enter
-    console.log('data', data);
+    console.log('enter room', data);
     const chatRoom = await this.chatsRepository.findOneRoom(data);
     if (!chatRoom) {
       await this.chatsRepository.createRoom(client, data);
@@ -38,15 +37,16 @@ export class ChatsService {
     }
 
     const { roomId, roomName, nickname } = data;
-    client.data.roomId = roomId;
+    // client.data.roomId = roomId;
+    client.data.roomName = roomName;
     // client.rooms.clear();
-    client.join(roomId);
+    client.join(roomName);
     client.emit('getMessage', {
       id: client.id,
       nickname,
       message: `${nickname} 님이 ${roomName} 방에 입장했습니다.`,
     });
-    client.broadcast.to(roomId).emit('getMessage', {
+    client.broadcast.to(roomName).emit('getMessage', {
       id: client.id,
       nickname,
       message: `${nickname} 님이 ${roomName} 방에 입장했습니다.`,
@@ -59,19 +59,22 @@ export class ChatsService {
     // return message;
   }
 
-  exitRoom(client: Socket, roomId: number) {
-    this.chatsRepository.exitRoom(client, roomId);
+  exitRoom(client: Socket, roomName: string) {
+    this.chatsRepository.exitRoom(client, roomName);
   }
 
-  async userInRoom(client: Socket, roomId: number) {
-    const inRoom = await this.chatsRepository.userInRoom(client, roomId);
+  async userInRoom(client: Socket, roomName: string) {
+    const inRoom = await this.chatsRepository.userInRoom(client, roomName);
     return inRoom;
   }
 
   async getAllMessages(client: Socket, data: any) {
     // TODO: 마을채팅방 접속시 DB에서 마을의 채팅기록 불러오기
-    const { roomId } = data;
-    const messages = await this.chatsRepository.getAllMessages(client, roomId);
+    const { roomId, roomName } = data;
+    const messages = await this.chatsRepository.getAllMessages(
+      client,
+      roomName
+    );
     return messages;
   }
 }

@@ -15,10 +15,8 @@ export class ChatsRepository {
   ) {}
 
   async findOneRoom(data: any) {
-    const { roomId } = data;
-    console.log('===========');
-    console.log(roomId);
-    return await this.chatRoomModel.findOne({ roomId });
+    const { roomName } = data;
+    return await this.chatRoomModel.findOne({ roomName });
   }
 
   async findOneUser(userId: number) {
@@ -27,20 +25,20 @@ export class ChatsRepository {
   }
 
   async createRoom(client: Socket, data: any) {
-    const { roomId, roomName } = data;
+    const { roomName } = data;
     await this.createUser(client, data);
     await this.chatRoomModel.create({
       roomName,
-      roomId,
+      // roomId,
       socketId: client.id,
     });
   }
 
   async enterRoom(client: Socket, data: any) {
-    const { roomId } = data;
+    const { roomName } = data;
     await this.createUser(client, data);
     await this.chatRoomModel.updateOne(
-      { roomId },
+      { roomName },
       { $push: { socketId: client.id } }
     );
   }
@@ -68,31 +66,24 @@ export class ChatsRepository {
   }
 
   async storeMessage(client: Socket, data: any) {
-    const { userId, message, roomId } = data;
+    const { userId, message, roomId, roomName } = data;
     this.messageModel.create({
       userId,
-      roomId,
+      // roomId,
+      roomName,
       message,
     });
   }
 
-  async exitRoom(client: Socket, roomId: number) {
+  async exitRoom(client: Socket, roomName: string) {
     await this.chatRoomModel.updateOne(
-      { roomId },
+      { roomName },
       { $pull: { socketId: client.id } }
     );
   }
 
-  async userInRoom(client: Socket, roomId: number) {
-    // const inRoom = await this.chatRoomModel.find({
-    //   where: {
-    //     roomId,
-    //   },
-    //   socketId: {
-    //     $in: client.id,
-    //   },
-    // });
-    const roomOne = await this.chatRoomModel.findOne({ roomId });
+  async userInRoom(client: Socket, roomName: string) {
+    const roomOne = await this.chatRoomModel.findOne({ roomName });
     const inRoom = await roomOne.socketId.includes(client.id);
     if (inRoom) {
       return true;
@@ -100,9 +91,9 @@ export class ChatsRepository {
     return false;
   }
 
-  async getAllMessages(client: Socket, roomId: number) {
+  async getAllMessages(client: Socket, roomName: string) {
     const messages = await this.messageModel.find({
-      roomId,
+      roomName,
     });
     return messages;
   }
