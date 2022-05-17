@@ -38,10 +38,9 @@ export class ChatsGateway {
 
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, data: any) {
-    console.log('후하', data);
-    console.log(client.id);
     const { userId, nickname, roomId, message, roomName } = data;
-    if (message === '') {
+    const filterMsg = message.trim();
+    if (message === '' || filterMsg === '') {
       return;
     }
     const inRoom = await this.chatsService.userInRoom(client, roomName);
@@ -67,7 +66,6 @@ export class ChatsGateway {
 
   @SubscribeMessage('exitRoom')
   exitRoom(client: Socket, room: any) {
-    console.log('여기서 exit');
     const { roomName } = room;
     client.leave(roomName);
     this.chatsService.exitRoom(client, roomName);
