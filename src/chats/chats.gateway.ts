@@ -37,10 +37,10 @@ export class ChatsGateway {
     }
   }
 
-  @SubscribeMessage('createRoom')
-  createRoom(client: Socket, room: any) {
-    return this.chatsService.createRoom(client, room);
-  }
+  // @SubscribeMessage('createRoom')
+  // createRoom(client: Socket, room: any) {
+  //   return this.chatsService.createRoom(client, room);
+  // }
 
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, data: any) {
