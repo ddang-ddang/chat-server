@@ -1,0 +1,17 @@
+# simple-socketio-load-test.yaml
+config:
+  target: "http://localhost:8080"
+  phase:
+    - duration: 60
+      arrivalRate: 25
+scenarios:
+  - name: "Socket.io test"
+    engine: socketio
+    flow:
+      - loop:
+        - emit:
+            channel: "enterName"
+            data: 
+              "userId": 1
+              "nickName": "testNick"
+              "roomName": "testRoom"

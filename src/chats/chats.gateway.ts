@@ -22,13 +22,19 @@ export class ChatsGateway {
 
   @SubscribeMessage('enterRoom')
   async setInit(client: Socket, data: any) {
-    await this.chatsService.enterRoom(client, data);
-    // TODO: 현재까지의 채팅기록을 보여준다.
-    const messages = await this.chatsService.getAllMessages(client, data);
-    return {
-      data,
-      messages,
-    };
+    try {
+      await this.chatsService.enterRoom(client, data);
+      // TODO: 현재까지의 채팅기록을 보여준다.
+      const messages = await this.chatsService.getAllMessages(client, data);
+      return {
+        data,
+        messages,
+      };
+    } catch (error) {
+      return {
+        error: error.message,
+      };
+    }
   }
 
   @SubscribeMessage('createRoom')
@@ -38,7 +44,7 @@ export class ChatsGateway {
 
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, data: any) {
-    const { userId, nickname, roomId, message, roomName } = data;
+    const { userId, nickname, message, roomName } = data;
     const filterMsg = message.trim();
     if (message === '' || filterMsg === '') {
       return;
@@ -58,7 +64,7 @@ export class ChatsGateway {
         userId,
         // nickname: client.data.nickname,
         nickname,
-        roomId,
+        roomName,
         message,
       })
     );
