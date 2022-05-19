@@ -1,29 +1,25 @@
-# simple-socketio-load-test.yaml
 config:
   target: "http://localhost:8080"
-  # socketio:
-  #   query: "id=bong"
+  socketio:
+    transport: ["websocket"]
   phase:
-    - duration: 10
-      arrivalRate: 4
+    - duration: 10  # run scenario for 10 seconds
+      arrivalRate: 5
 scenarios:
   - name: "Socket.io test"
     engine: socketio
     flow:
-      - emit:
-          channel: "enterRoom"
-          data:
-            "socketId": "{{$randomString()}}"
-            "userId": "{{$randonNumber()}}"
-            "nickName": "testNick"
-            "roomName": "testRoom"
-      # - think: 15
-      # - loop:
-      #   - emit:
-      #       channel: "sendMessage"
-      #       data:
-      #         "socketId": "{{$randomString()}}"
-      #         "userId": "{{$randomNumber()}}"
-      #         "nickName": "{{$randomString}}"
-      #         "roomName": "testRoom"
-      #         "message": "test message"
+      - loop:
+        - emit:
+            channel: "enterRoom"
+            data:
+              "userId": "{{$randomNumber(1, 10)}}"
+              "nickName": "testNick"
+              "roomName": "testRoom"
+        - emit:
+            channel: "sendMessage"
+            data:
+              "userId": "{{$randomNumber(1, 10)}}"
+              "nickName": "{{$randomString()}}"
+              "roomName": "testRoom"
+              "message": "test message"

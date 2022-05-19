@@ -45,6 +45,7 @@ export class ChatsGateway {
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, data: any) {
     const { userId, nickname, message, roomName } = data;
+    console.log('send message', data);
     const filterMsg = message.trim();
     if (message === '' || filterMsg === '') {
       return;
@@ -52,6 +53,7 @@ export class ChatsGateway {
     const inRoom = await this.chatsService.userInRoom(client, roomName);
     if (!inRoom) {
       // client id 가 chatRooms 안의 socketId 배열 안에 없다면 return
+      console.log('no way');
       return {
         error: '연결되지 않은 사용자입니다.',
       };
