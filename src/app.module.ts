@@ -1,15 +1,17 @@
 import { Module } from '@nestjs/common';
-import { ChatsGateway } from './chats/chats.gateway';
+import { ConfigModule } from '@nestjs/config';
 import { ChatsModule } from './chats/chats.module';
-import { TypegooseModule } from 'nestjs-typegoose';
-import * as config from 'config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ChatFrontEndController } from './app.controller';
+import configuration from '../config/configuration';
 
-const mongoDBConfig = config.get('db');
 @Module({
   imports: [
-    MongooseModule.forRoot(mongoDBConfig.MONGODB_URI, {
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true,
+    }),
+    MongooseModule.forRoot(configuration.mongoDB.url, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     }),
