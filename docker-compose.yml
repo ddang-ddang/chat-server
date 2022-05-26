@@ -14,7 +14,7 @@ services:
   app:
     depends_on:
       - mongodb
-    build: ../chatServer
+    build: ./
     # dockerfile: Dockerfile
     restart: unless-stopped
     env_file: ./.env
