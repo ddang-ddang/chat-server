@@ -73,10 +73,10 @@ export class ChatsGateway {
 
   /* 채팅방 나가기 */
   @SubscribeMessage('exitRoom')
-  exitRoom(client: Socket, room: any) {
-    const { roomName } = room;
+  exitRoom(client: Socket, data: any) {
+    const { roomName } = data;
     client.leave(roomName);
-    this.chatsService.exitRoom(client, roomName);
+    this.chatsService.exitRoom(client, data);
     this.handleDisconnction(client);
   }
 

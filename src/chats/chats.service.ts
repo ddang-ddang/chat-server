@@ -59,8 +59,15 @@ export class ChatsService {
     this.chatsRepository.storeMessage(client, data);
   }
 
-  exitRoom(client: Socket, roomName: string) {
+  exitRoom(client: Socket, data: any) {
+    const { nickname, roomName } = data;
     this.chatsRepository.exitRoom(client, roomName);
+
+    client.broadcast.to(roomName).emit('getMessage', {
+      id: client.id,
+      nickname,
+      message: `${nickname} 님이 방을 나가셨습니다.`,
+    });
   }
 
   async userInRoom(client: Socket, roomName: string) {
