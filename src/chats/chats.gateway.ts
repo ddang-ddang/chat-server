@@ -42,10 +42,10 @@ export class ChatsGateway {
   //   return this.chatsService.createRoom(client, room);
   // }
 
+  /* 메세지 보내기 */
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, data: any) {
     const { userId, nickname, message, roomName } = data;
-    console.log('send message', data);
     const filterMsg = message.trim();
     if (message === '' || filterMsg === '') {
       return;
@@ -53,7 +53,6 @@ export class ChatsGateway {
     const inRoom = await this.chatsService.userInRoom(client, roomName);
     if (!inRoom) {
       // client id 가 chatRooms 안의 socketId 배열 안에 없다면 return
-      console.log('no way');
       return {
         error: '연결되지 않은 사용자입니다.',
       };
@@ -72,6 +71,7 @@ export class ChatsGateway {
     );
   }
 
+  /* 채팅방 나가기 */
   @SubscribeMessage('exitRoom')
   exitRoom(client: Socket, room: any) {
     const { roomName } = room;
@@ -80,7 +80,7 @@ export class ChatsGateway {
     this.handleDisconnction(client);
   }
 
-  // 특정 마을의 채팅방에 들어가면 실행될 함수
+  /* 특정 마을의 채팅방에 들어가면 실행될 함수 */
   @SubscribeMessage('findAllMessages')
   async getAllMessages(client: Socket, data: any) {
     const { roomId } = data;

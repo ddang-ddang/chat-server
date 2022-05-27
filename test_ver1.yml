@@ -1,17 +1,17 @@
 config:
   target: "http://localhost:8080"
-  # socketio:
-  #   transport: ["websocket"]
+  socketio:
+    transport: ["websocket"]
   phase:
     - duration: 10  # run scenario for 10 seconds
       arrivalRate: 5
-  engines:
-    socketio-v3: {}
+  # engines:
+  #   socketio-v3: {}
 
 scenarios:
   - name: "Socket.io test"
-    # engine: socketio
-    engine: socketio-v3
+    engine: socketio
+    # engine: socketio-v3
     flow:
       - loop:
         - emit:

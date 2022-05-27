@@ -14,8 +14,7 @@ export class ChatsRepository {
     @InjectModel(ChatRoom.name) private chatRoomModel: Model<ChatRoom>
   ) {}
 
-  async findOneRoom(data: any) {
-    const { roomName } = data;
+  async findOneRoom(roomName: string) {
     return await this.chatRoomModel.findOne({ roomName });
   }
 
@@ -66,11 +65,9 @@ export class ChatsRepository {
   }
 
   async storeMessage(client: Socket, data: any) {
-    const { userId, message, roomId, roomName } = data;
-    console.log('reposeitory', data);
+    const { userId, message, roomName } = data;
     this.messageModel.create({
       userId,
-      // roomId,
       roomName,
       message,
     });
