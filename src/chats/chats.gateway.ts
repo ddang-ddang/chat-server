@@ -23,12 +23,15 @@ export class ChatsGateway {
   @SubscribeMessage('enterRoom')
   async setInit(client: Socket, data: any) {
     try {
+      const { roomName } = data;
       await this.chatsService.enterRoom(client, data);
       // TODO: 현재까지의 채팅기록을 보여준다.
       const messages = await this.chatsService.getAllMessages(client, data);
+      const memberCnt = await this.chatsService.cntMembers(roomName);
       return {
         data,
         messages,
+        memberCnt,
       };
     } catch (error) {
       return {
@@ -78,6 +81,10 @@ export class ChatsGateway {
     client.leave(roomName);
     this.chatsService.exitRoom(client, data);
     this.handleDisconnction(client);
+    const memberCnt = this.chatsService.cntMembers(roomName);
+    return {
+      memberCnt,
+    };
   }
 
   /* 특정 마을의 채팅방에 들어가면 실행될 함수 */

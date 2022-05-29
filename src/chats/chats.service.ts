@@ -26,10 +26,12 @@ export class ChatsService {
     }
 
     client.join(roomName);
+    const memberCnt = await this.cntMembers(roomName);
     client.broadcast.to(roomName).emit('getMessage', {
       id: client.id,
       nickname,
       message: `${nickname} 님이 입장했습니다.`,
+      memberCnt,
     });
   }
 
@@ -38,14 +40,16 @@ export class ChatsService {
     this.chatsRepository.storeMessage(client, data);
   }
 
-  exitRoom(client: Socket, data: any) {
+  async exitRoom(client: Socket, data: any) {
     const { nickname, roomName } = data;
     this.chatsRepository.exitRoom(client, roomName);
 
+    const memberCnt = await this.cntMembers(roomName);
     client.broadcast.to(roomName).emit('getMessage', {
       id: client.id,
       nickname,
       message: `${nickname} 님이 나가셨습니다.`,
+      memberCnt,
     });
   }
 
@@ -62,5 +66,9 @@ export class ChatsService {
       roomName
     );
     return messages;
+  }
+
+  async cntMembers(roomName: string) {
+    return await this.chatsRepository.cntMembers(roomName);
   }
 }
