@@ -23,12 +23,15 @@ export class ChatsGateway {
   @SubscribeMessage('enterRoom')
   async setInit(client: Socket, data: any) {
     try {
+      const { roomName } = data;
       await this.chatsService.enterRoom(client, data);
       // TODO: 현재까지의 채팅기록을 보여준다.
       const messages = await this.chatsService.getAllMessages(client, data);
+      const memberCnt = await this.chatsService.cntMembers(roomName);
       return {
         data,
         messages,
+        memberCnt,
       };
     } catch (error) {
       return {
@@ -42,10 +45,11 @@ export class ChatsGateway {
   //   return this.chatsService.createRoom(client, room);
   // }
 
+  /* 메세지 보내기 */
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, data: any) {
+    console.log(data);
     const { userId, nickname, message, roomName } = data;
-    console.log('send message', data);
     const filterMsg = message.trim();
     if (message === '' || filterMsg === '') {
       return;
@@ -53,13 +57,14 @@ export class ChatsGateway {
     const inRoom = await this.chatsService.userInRoom(client, roomName);
     if (!inRoom) {
       // client id 가 chatRooms 안의 socketId 배열 안에 없다면 return
-      console.log('no way');
       return {
         error: '연결되지 않은 사용자입니다.',
       };
     }
     await this.chatsService.sendMessage(client, data);
     client.leave(client.id);
+    const memberCnt = await this.chatsService.cntMembers(roomName);
+    console.log('room name', roomName);
     client.rooms.forEach((roomName) =>
       client.to(roomName).emit('getMessage', {
         // id: client.id,
@@ -68,19 +73,25 @@ export class ChatsGateway {
         nickname,
         roomName,
         message,
+        memberCnt,
       })
     );
   }
 
+  /* 채팅방 나가기 */
   @SubscribeMessage('exitRoom')
-  exitRoom(client: Socket, room: any) {
-    const { roomName } = room;
+  exitRoom(client: Socket, data: any) {
+    const { roomName } = data;
     client.leave(roomName);
-    this.chatsService.exitRoom(client, roomName);
+    this.chatsService.exitRoom(client, data);
     this.handleDisconnction(client);
+    const memberCnt = this.chatsService.cntMembers(roomName);
+    return {
+      memberCnt,
+    };
   }
 
-  // 특정 마을의 채팅방에 들어가면 실행될 함수
+  /* 특정 마을의 채팅방에 들어가면 실행될 함수 */
   @SubscribeMessage('findAllMessages')
   async getAllMessages(client: Socket, data: any) {
     const { roomId } = data;
