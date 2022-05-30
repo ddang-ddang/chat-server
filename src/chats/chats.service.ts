@@ -35,9 +35,10 @@ export class ChatsService {
     });
   }
 
-  sendMessage(client: Socket, data: any) {
+  async sendMessage(client: Socket, data: any) {
     // TODO db에 저장하는 로직 추가
-    this.chatsRepository.storeMessage(client, data);
+    const newMessage = await this.chatsRepository.storeMessage(client, data);
+    return newMessage;
   }
 
   async exitRoom(client: Socket, data: any) {
