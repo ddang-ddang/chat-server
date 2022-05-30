@@ -99,6 +99,6 @@ export class ChatsRepository {
   async cntMembers(roomName: string) {
     const document = await this.chatRoomModel.findOne({ roomName });
     const cnt = document.socketId.length;
-    return cnt;
+    return cnt ? cnt : 0;
   }
 }

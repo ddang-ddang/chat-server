@@ -48,6 +48,7 @@ export class ChatsGateway {
   /* 메세지 보내기 */
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, data: any) {
+    console.log(data);
     const { userId, nickname, message, roomName } = data;
     const filterMsg = message.trim();
     if (message === '' || filterMsg === '') {
@@ -62,6 +63,8 @@ export class ChatsGateway {
     }
     await this.chatsService.sendMessage(client, data);
     client.leave(client.id);
+    const memberCnt = await this.chatsService.cntMembers(roomName);
+    console.log('room name', roomName);
     client.rooms.forEach((roomName) =>
       client.to(roomName).emit('getMessage', {
         // id: client.id,
@@ -70,6 +73,7 @@ export class ChatsGateway {
         nickname,
         roomName,
         message,
+        memberCnt,
       })
     );
   }
