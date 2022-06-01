@@ -9,7 +9,7 @@ export class Message extends Document {
 
   // @Prop({ required: true })
   // roomId: number;
-
+  
   @Prop({ required: true })
   nickname: string;
 
