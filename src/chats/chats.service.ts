@@ -43,7 +43,7 @@ export class ChatsService {
 
   async exitRoom(client: Socket, data: any) {
     const { nickname, roomName } = data;
-    this.chatsRepository.exitRoom(client, roomName);
+    await this.chatsRepository.exitRoom(client, roomName);
 
     const memberCnt = await this.cntMembers(roomName);
     client.broadcast.to(roomName).emit('getMessage', {
