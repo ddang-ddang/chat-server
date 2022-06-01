@@ -11,6 +11,9 @@ export class Message extends Document {
   // roomId: number;
 
   @Prop({ required: true })
+  nickname: string;
+
+  @Prop({ required: true })
   roomName: string;
 
   @Prop({ required: true })

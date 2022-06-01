@@ -65,12 +65,14 @@ export class ChatsRepository {
   }
 
   async storeMessage(client: Socket, data: any) {
-    const { userId, message, roomName } = data;
-    this.messageModel.create({
+    const { userId, nickname, message, roomName } = data;
+    const newMessage = this.messageModel.create({
       userId,
+      nickname,
       roomName,
       message,
     });
+    return newMessage;
   }
 
   async exitRoom(client: Socket, roomName: string) {

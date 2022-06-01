@@ -62,17 +62,17 @@ export class ChatsGateway {
       };
     }
     await this.chatsService.sendMessage(client, data);
+    const newMessage = await this.chatsService.sendMessage(client, data);
     client.leave(client.id);
     const memberCnt = await this.chatsService.cntMembers(roomName);
     console.log('room name', roomName);
     client.rooms.forEach((roomName) =>
       client.to(roomName).emit('getMessage', {
-        // id: client.id,
         userId,
-        // nickname: client.data.nickname,
         nickname,
         roomName,
         message,
+        createdAt: newMessage.createdAt,
         memberCnt,
       })
     );
