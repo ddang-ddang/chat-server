@@ -66,7 +66,7 @@ export class ChatsRepository {
 
   async storeMessage(client: Socket, data: any) {
     const { userId, nickname, message, roomName } = data;
-    const newMessage = this.messageModel.create({
+    const newMessage = await this.messageModel.create({
       userId,
       nickname,
       roomName,
