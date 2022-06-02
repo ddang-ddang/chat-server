@@ -83,7 +83,7 @@ export class ChatsGateway {
     client.leave(roomName);
     await this.chatsService.exitRoom(client, data);
     this.handleDisconnction(client);
-    const memberCnt = this.chatsService.cntMembers(roomName);
+    const memberCnt = await this.chatsService.cntMembers(roomName);
     return {
       memberCnt,
     };
